@@ -176,7 +176,7 @@ var getPlayerName = function() {
 };
 
 var playerInfo = {
-    name: getPlayerName(),``
+    name: getPlayerName(),
     health: 100,
     attack: 10,
     money: 10,
