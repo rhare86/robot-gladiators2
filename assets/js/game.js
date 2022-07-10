@@ -40,6 +40,10 @@ var fightOrSkip = function() {
     console.log(
       playerInfo.name + ' attacked ' + enemy.name + '. ' + enemy.name + ' now has ' + enemy.health + ' health remaining.'
     );
+console.log("Hello");
+
+
+
 
     // check enemy's health
     if (enemy.health <= 0) {
