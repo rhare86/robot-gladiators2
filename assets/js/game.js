@@ -8,6 +8,7 @@ var fightOrSkip = function() {
     // ask player if they'd like to fight or skip using fightOrSkip function
     var promptFight = window.prompt('Would you like to FIGHT or SKIP this battle? Enter "FIGHT" or "SKIP" to choose.');
 
+
     // Conditional Recursive Function Call
     if (promptFight === "" || promptFight === null){
         window.alert("You need to provide a valid answer! Please try again.");
@@ -15,16 +16,17 @@ var fightOrSkip = function() {
     }
 
     // if player picks "skip" confirm and then stop the loop
-    if (promptFight === "skip" || promptFight === "SKIP") {
+    promptFight = promptFight.toLowerCase();
+    if (promptFight === "skip") {
         // confirm player wants to skip
         var confirmSkip = window.confirm("Are you sure you'd like to quit?");
 
         // if yes (true), leave fight
         if (confirmSkip) {
             window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-            // subtract money from playerMoney for skipping
-            playerInfo.playerMoney = playerInfo.money - 10;
-            shop();
+            // subtract money from playerMoney for skipping, but don't let them go into the negative
+            playerInfo.money = Math.max(0, playerInfo.money - 10);
+            return true;
         }
     } 
 }
@@ -32,15 +34,26 @@ var fightOrSkip = function() {
 
     // repeat and execute as long as the enemy-robot is alive
     var fight = function(enemy) {
-  while (playerInfo.health > 0 && enemy.health > 0) {
-      fightOrSkip();
+        // keep track of who goes first
+        var isPlayerTurn = true;
+
+        // randomly change turn order
+        if (Math.random() > 0.5) {
+            isPlayerTurn = false;
+        }
+    while (playerInfo.health > 0 && enemy.health > 0) {
+        if (isPlayerTurn) {
+        // ask player if they'd like to fight or skip using fightOrSkip function
+      if (fightOrSkip()) {
+      // if true, leave fight by breaking loop
+      break;
+    }
     var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
     // remove enemy's health by subtracting the amount set in the playerAttack variable
     enemy.health = Math.max(0, enemy.health - damage);
     console.log(
       playerInfo.name + ' attacked ' + enemy.name + '. ' + enemy.name + ' now has ' + enemy.health + ' health remaining.'
     );
-console.log("Hello");
 
 
 
@@ -56,8 +69,8 @@ console.log("Hello");
       break;
     } else {
       window.alert(enemy.name + ' still has ' + enemy.health + ' health left.');
-    }
-
+    } 
+    } else {
     // remove players's health by subtracting the amount set in the enemyAttack variable
     var damage = randomNumber(enemy.attack - 3, enemy.attack);
     playerInfo.health = Math.max(0, playerInfo.health - damage);
@@ -74,6 +87,8 @@ console.log("Hello");
       window.alert(playerInfo.name + ' still has ' + playerInfo.health + ' health left.');
     }
   } // end of while loop
+  isPlayerTurn = !isPlayerTurn;
+}
 }; // end of fight function
 
 // function to start a new game
@@ -144,22 +159,19 @@ var endGame = function() {
 var shop = function() {
   // ask player what they'd like to do
   var shopOptionPrompt = window.prompt(
-    'Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one "REFILL", "UPGRADE", or "LEAVE" to make a choice.'
+    'Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter 1 for REFILL, 2 for UPGRADE, or 3 for LEAVE.'
   );
-
+  shopOptionPrompt = parseInt(shopOptionPrompt);
   // use switch case to carry out action
   switch (shopOptionPrompt) {
-    case 'REFILL':
-    case 'refill':
-        playerInfo.refillHealth();
+    case 1:
+    playerInfo.refillHealth();
         break;
         // increase health and decrease money
-    case 'UPGRADE':
-    case 'upgrade':
+    case 2:
      playerInfo.upgradeAttack();
       break;
-    case 'LEAVE':
-    case 'leave':
+    case 3:
       window.alert('Leaving the store.');
 
       // do nothing, so function will end
